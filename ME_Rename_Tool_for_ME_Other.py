@@ -1,6 +1,6 @@
 import os
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox, simpledialog
+from tkinter import ttk, filedialog, messagebox, simpledialog, Toplevel, Text
 from PIL import Image, ImageTk
 from tkinter.font import Font
 import pprint
@@ -10,6 +10,7 @@ import shutil
 from tkinterdnd2 import TkinterDnD, DND_FILES
 from docx import Document
 from docx.shared import Inches
+import markdown
 
 class CustomSimpledialog(simpledialog.Dialog):
     def __init__(self, parent, title, message, initialvalue=""):
@@ -30,7 +31,7 @@ class CustomSimpledialog(simpledialog.Dialog):
 class FileExplorerApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("[ME] IP/SaltMist/ISTA Test Data Rename Tool V-1.0.1")
+        self.root.title("[ME] Other Test Data Rename Tool V-1.0.2")
 
         self.large_font = Font(family="Helvetica", size=12, weight="bold")
 
@@ -110,6 +111,7 @@ class FileExplorerApp:
         self.folder_tree.tag_configure('folder', foreground='blue',font=('Helvetica', 12, 'bold'))  # Folder items will be yellow
         self.folder_tree.tag_configure('file', foreground='black',font=('Helvetica', 10, 'bold'))   # File items will be black
 
+#要討論六面是否要按照順序，如按照順序可限定naming pattern 順序
         self.default_naming_patterns = {
             # IP2X, IP3X, IP4X
             "IP 2X Basic Function Test": {
@@ -207,7 +209,7 @@ class FileExplorerApp:
             },
 
             # Package (PKG)
-            "Step1_Package Basic Test": {
+            "Step3_Package Basic Test": {
                 "": [
                     "PKG Function Check Before Test", 
                     "PKG Function Check After Test"
@@ -237,6 +239,9 @@ class FileExplorerApp:
             },
 
             # Storage
+            "Storage Test Basic": {
+                "": ["Function check Before Test", "Function check After Test"]
+            },
             "HTHHS Test": {
                 "": ["Setup", "Finish", "Function check After Test"]
             },
@@ -244,6 +249,33 @@ class FileExplorerApp:
                 "": ["Setup", "Finish", "Function check After Test"]
             }
         }
+        if os.path.exists(default_md_file):
+            self.show_markdown_in_new_window(default_md_file)
+        else:
+            messagebox.showerror("Error", f"Default Markdown file not found:\n{default_md_file}")
+
+    #定義markdown window auto open
+    def show_markdown_in_new_window(self, file_path):
+        # Read and convert the Markdown file to HTML
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                md_content = file.read()
+            html_content = markdown.markdown(md_content)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to read the file: {e}")
+            return
+
+        # Create a new Toplevel window
+        new_window = Toplevel(self.root)
+        new_window.title(f"Markdown Viewer - {os.path.basename(file_path)}")
+
+        # Add a scrollable Text widget to display the content
+        text_widget = tk.Text(new_window, wrap=tk.WORD)
+        text_widget.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
+
+        # Insert the HTML (rendered Markdown) into the Text widget
+        text_widget.insert(tk.END, html_content)
+        text_widget.configure(state="disabled")  # Make the content read-only
 
 #創建資料夾結構函數
 #創建資料夾結構       
@@ -366,7 +398,7 @@ class FileExplorerApp:
                 "IP X6 Test DUT六面",
                 "IP 6X Test",
                 "IP X6 Test",
-                "IP老化測試"
+                "IP66老化測試"
             ]
         elif test_execution == "[IP Test] IP 67":
             return [
@@ -375,7 +407,7 @@ class FileExplorerApp:
                 "IP X7 Test DUT六面",
                 "IP 6X Test",
                 "IP X7 Test",
-                "IP老化測試"
+                "IP67老化測試"
             ]
         elif test_execution == "[IP Test] IP 68":
             return [
@@ -384,7 +416,7 @@ class FileExplorerApp:
                 "IP X8 Test DUT六面",
                 "IP 6X Test",
                 "IP X8 Test",
-                "IP老化測試"
+                "IP68老化測試"
             ]
         elif test_execution == "[Salt Mist]":
             return [
@@ -395,9 +427,9 @@ class FileExplorerApp:
         
         elif test_execution == "[ISTA] Package Vib&Drop":
             return [
-                "Step1_Package Basic Test",
-                "Step2_外箱六面_Vib前",
-                "Step3_彩盒&DUT六面_Vib前",
+                "Step1_外箱六面_Vib前",
+                "Step2_彩盒&DUT六面_Vib前",
+                "Step3_Package Basic Test",
                 "Step4_Package Vib Test",
                 "Step5_外箱六面_Vib後Drop前",
                 "Step6_Package Drop Test",
@@ -405,8 +437,11 @@ class FileExplorerApp:
                 "Step8_彩盒&DUT六面_Drop",
                 "Step9_Function Check After ISTA Test"
             ]
+        #需新增Storage Basic function test folder
         elif test_execution == "[Storage] HTHHS&LTS":
             return [
+                "Storage Test Basic",
+                "Storage Test Basic DUT六面"
                 "HTHHS Test",
                 "After HTHHS Test DUT六面",
                 "LTS Test",
@@ -450,54 +485,6 @@ class FileExplorerApp:
                 else:
                     return user_input
                 
-        #===================================================================================
-        # def test_sample_chamber():
-        #     # Create the input window
-        #     input_window = tk.Toplevel(self.root)
-        #     input_window.title("Select Test Name")
-        #     input_window.geometry("400x200")
-
-        #     # Frame for dropdown menu
-        #     frame = tk.Frame(input_window)
-        #     frame.pack(pady=20, padx=20)
-
-        #     tk.Label(frame, text="Test Execution: ").pack(side=tk.LEFT, padx=5)
-
-        #     # Dropdown menu for test name selection
-        #     testname_var = tk.StringVar(value="Ingress Protection Basic function")
-        #     testname_menu = tk.OptionMenu(
-        #         frame, testname_var,
-        #         "[IP] IP 20", "[IP] IP 30",
-        #         "[IP] IP 40", "[IP] IP 66", "[IP] IP 67",
-        #         "[IP] IP 68", "[Salt Mist]", "[ISTA] Package Vib&Drop"
-
-        #     )
-        #     testname_menu.pack(side=tk.LEFT, padx=5)
-
-        #     # Function to handle confirmation
-            # def confirm_and_close():
-            #     selected_test_name = testname_var.get()
-            #     input_window.destroy()
-            #     return selected_test_name
-
-            # # Button to confirm selection
-            # tk.Button(input_window, text="Enter", command=confirm_and_close).pack(pady=10)
-
-            # # Function to handle cancellation
-            # def skip_and_close():
-            #     input_window.destroy()
-            #     return None
-
-            # # Button to skip
-            # tk.Button(input_window, text="Skip", command=skip_and_close).pack(pady=10)
-
-            # # Wait until the window is closed
-            # input_window.wait_window()
-
-            # # Return the selected test name
-            # return testname_var.get()
-        #====================================================================================
-
         def select_test_executions():
             selected_executions = []
             options = [ 
@@ -835,7 +822,7 @@ class FileExplorerApp:
             self.folder_tree.item(child, open=False)
             self.shrink_all_children(child)
 
-# open file function 
+# 開啟檔案功能 
     def open_selected(self):
         selected_item = self.image_tree.selection()
         if selected_item:
@@ -851,6 +838,7 @@ class FileExplorerApp:
                 except OSError as e:
                     messagebox.showerror("錯誤", f"無法開啟資料夾 {item_path}: {e}")
 
+    #定義已存在之名稱與不符合naming rule 之名稱
     def validate_and_rename_images(self, folder_path,test_type):
         """
         Validate and rename images in the folder based on the naming patterns.
@@ -888,40 +876,75 @@ class FileExplorerApp:
             return self.prompt_for_overwrite(folder_path, existing_names)
 
         elif not matched_files:
-            # Case 2: None of the images match naming patterns
-            return self.prompt_for_rename_all(folder_path, naming_patterns, images)
+            # Case 2: None of the images match naming patterns #已修正使用者提醒未命名
+            return self.prompt_for_rename_all(folder_path, mismatched_files, missing_patterns, naming_patterns, images)
 
         else:
             # Case 3: Partial match
             return self.prompt_for_partial_rename(folder_path, existing_names, mismatched_files, missing_patterns, naming_patterns, images)
+    
+    #==============將命名路徑特別標記提醒的函數(待修改) =======================================
+    # def show_highlight_popup(self, message):
+    #     """
+    #     Display a popup window with highlighted specific words in the message.
+    #     """
+    #     if not isinstance(message, str):  # Ensure the message is a string
+    #         raise ValueError("Expected 'message' to be a string")
 
-    def prompt_for_overwrite(self, folder_path, existing_names):
-        """
-        Prompt the user to overwrite all existing names.
-        """
-        
-        response = messagebox.askyesno(
-            "覆蓋確認",
-            f"資料夾：'{folder_path}' 的影像已符合命名規則。\n\n" +
-            "你要覆蓋已命名好的檔案嗎？"
-        )
-        if response:
-            return self.prompt_for_overwrite(folder_path, existing_names)  # Rename or overwrite as needed
-        return 0
-#嘗試修正對正確的資料夾檔案判定為錯誤
-    def prompt_for_rename_all(self, folder_path, naming_patterns, images):
+    #     # Create a new Toplevel window
+    #     popup = tk.Toplevel(self.root)
+    #     popup.title("Highlight Popup")
+    #     popup.geometry("400x300")
+
+    #     # Add a scrollable Text widget
+    #     text_widget = tk.Text(popup, wrap=tk.WORD)
+    #     text_widget.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
+
+    #     # Insert the message line by line, with optional highlighting
+    #     for line in message.split("\n"):
+    #         if "已符合命名規則的檔案：" in line:
+    #             text_widget.insert(tk.END, line + "\n", "highlight")
+    #         else:
+    #             text_widget.insert(tk.END, line + "\n")
+
+    #     # Configure the Text widget to highlight specific text
+    #     text_widget.tag_configure("highlight", foreground="red", font=("Arial", 12, "bold"))
+    #     text_widget.configure(state="disabled")  # Make the text read-only
+    
+    # def prompt_for_overwrite(self, folder_path, existing_names):
+    #     """
+    #     Prompt the user to overwrite all existing names.
+    #     """
+    #     message = (
+    #         f"資料夾：'{folder_path}' 的影像已符合命名規則。\n\n"
+    #         f"已符合命名規則的檔案：\n{', '.join(existing_names)}\n\n"
+    #         f"你要覆蓋已命名好的檔案嗎？"
+    #     )
+
+    #     # Display the highlighted popup
+    #     self.show_highlight_popup(message)
+
+    #     # Show a Yes/No messagebox after the popup
+    #     response = tk.messagebox.askyesno("覆蓋確認", "你要覆蓋已命名好的檔案嗎？")
+    #     return response
+    #=======================================================================================
+
+#嘗試修正對正確的資料夾檔案判定為錯誤 (問題為因原本的名稱就跟naming rule不同，系統會自行判斷不符合命名規則)
+    def prompt_for_rename_all(self, folder_path,  mismatched_files, missing_patterns,naming_patterns, images):
         """
         Prompt the user to rename all files if none match.
         """
         response = messagebox.askyesno(
             "重命名建議",
-            f"資料夾：'{folder_path}' 的所有影像不符合命名規則。\n\n" +
-            "是否要重命名？"
+            f"資料夾：'{folder_path}' 的所有影像不符合命名規則。\n\n" 
+            f"不符合命名規則的檔案：\n{', '.join(mismatched_files)}\n\n"
+            f"尚未滿足的命名規則：\n{', '.join(missing_patterns)}\n\n"
+            f"是否要重命名？"
         )
         if response:
             return self.perform_rename(folder_path, naming_patterns, images)
         return 0
-
+#重新檢查命盟規則是否符合naming pattern狀況
     def prompt_for_partial_rename(self, folder_path, existing_names, mismatched_files, missing_patterns, naming_patterns, images):
         """
         Prompt the user to handle partial matches.
@@ -931,7 +954,7 @@ class FileExplorerApp:
             f"已符合命名規則的檔案：\n{', '.join(existing_names)}\n\n"
             f"不符合命名規則的檔案：\n{', '.join(mismatched_files)}\n\n"
             f"尚未滿足的命名規則：\n{', '.join(missing_patterns)}\n\n"
-            f"順序可能會亂，是否要重新命名？"
+            f"請檢查影像順序，否則順序可能會亂，是否要重新命名？"
         )
         response = messagebox.askyesno("重命名確認", warning_message)
         if response:
@@ -1019,7 +1042,7 @@ class FileExplorerApp:
 
         return total_renamed
 
-
+#重新檢查命盟規則是否符合naming pattern狀況
     def check_and_rename_images_in_folder_with_check(self, folder_path, naming_patterns):
         """
         Helper function to check and rename images in a folder, handling existing names.
@@ -1187,7 +1210,7 @@ class FileExplorerApp:
                             messagebox.showerror("Error", f"Failed to rename file: {e}")
 
         return total_renamed
-
+#需修正命名總量計算，目前只針對六面命名完總量進行計算
 
     def rename_images(self):
         """
@@ -1196,6 +1219,7 @@ class FileExplorerApp:
         total_renamed_outer = self.check_and_rename_outer_layer()  # Optional: Call other rename logic
         total_renamed_sixpiece = self.check_and_rename_sixpiece_with_subfolders()
         self.refresh_views()
+        #重新命名數量計算需修改
         total_renamed = total_renamed_outer + total_renamed_sixpiece
         messagebox.showinfo("Rename Complete", f"Renamed {total_renamed} images.")
 
@@ -1319,6 +1343,7 @@ class FileExplorerApp:
 
 # Main execution
 if __name__ == "__main__":
+    default_md_file = r"C:\Users\AlvinYT_Liang\Desktop\AutomaticTool\重新命名\ME rename tool\ME_Other_Folder_Structure.md"
     root = TkinterDnD.Tk()  # Create the root window with drag-and-drop enabled
     app = FileExplorerApp(root)  # Pass the root to FileExplorerApp
     root.mainloop()  # Start the main event loop
