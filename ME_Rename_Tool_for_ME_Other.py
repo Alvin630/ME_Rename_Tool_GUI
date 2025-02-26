@@ -113,7 +113,7 @@ class FileExplorerApp:
 
 #要討論六面是否要按照順序，如按照順序可限定naming pattern 順序
         self.default_naming_patterns = {
-            # IP2X, IP3X, IP4X
+            # IP2X, IP3X, IP4X, IP5X
             "IP 2X Basic Function Test": {
                 "": [
                     "IP 2X Function Check Before Test", 
@@ -141,8 +141,6 @@ class FileExplorerApp:
             "IP 4X Test": {
                 "": ["IP 4X Test"]
             },
-
-            # IP5X, IP6X, IPX5, IPX6, IPX7, IPX8
             "IP 5X Basic Function Test": {
                 "": [
                     "IP 5X Function Check Before Test", 
@@ -150,7 +148,69 @@ class FileExplorerApp:
                 ]
             },
             "IP 5X Test": {
-                "": ["IP 5X Test"]
+                "": ["IP 5X Function check Before Test",
+                     "IP 5X Start",
+                     "IP 5X Finish",
+                     "IP 5X Unpack",
+                     "IP 5X Function check After Test"
+                ]
+            },
+            # IPX3, IPX4, IPX5, IPX6 
+            "IP X3 Basic Function Test": {
+                "": [
+                    "IP X3 Function Check Before Test", 
+                    "IP X3 Function Check After Test"
+                ]
+            },
+            "IP X3 Test": {
+                "": ["IP X3 Function check Before Test",
+                     "IP X3 Start",
+                     "IP X3 Finish",
+                     "IP X3 Unpack",
+                     "IP X3 Function check After Test"
+                ]
+            },
+            "IP X4 Basic Function Test": {
+                "": [
+                    "IP X4 Function Check Before Test", 
+                    "IP X4 Function Check After Test"
+                ]
+            },
+            "IP X4 Test": {
+                "": ["IP X4 Function check Before Test",
+                     "IP X4 Start",
+                     "IP X4 Finish",
+                     "IP X4 Unpack",
+                     "IP X4 Function check After Test"
+                ]
+            },
+            "IP X5 Basic Function Test": {
+                "": [
+                    "IP X5 Function Check Before Test", 
+                    "IP X5 Function Check After Test"
+                ]
+            },
+            "IP X5 Test": {
+                "": ["IP X5 Function check Before Test",
+                     "IP X5 Start",
+                     "IP X5 Finish",
+                     "IP X5 Unpack",
+                     "IP X5 Function check After Test"
+                ]
+            },
+            "IP X6 Basic Function Test": {
+                "": [
+                    "IP X6 Function Check Before Test", 
+                    "IP X6 Function Check After Test"
+                ]
+            },
+            "IP X6 Test": {
+                "": ["IP X6 Function check Before Test",
+                     "IP X6 Start",
+                     "IP X6 Finish",
+                     "IP X6 Unpack",
+                     "IP X6 Function check After Test"
+                ]
             },
             "IP 66 Basic Function Test": {
                 "": [
@@ -159,13 +219,17 @@ class FileExplorerApp:
                 ]
             },
             "IP 6X Test": {
-                "": ["IP 6X Test"]
-            },
-            "IP X6 Test": {
-                "": ["IP X6 Test"]
+                "": ["IP 6X Function check Before Test",
+                     "IP 6X Start",
+                     "IP 6X Finish",
+                     "IP 6X Unpack",
+                     "IP 6X Function check After Test"
+                ]
             },
             "IP66老化測試": {
-                "": ["IP 66 Setup", "IP66 Finish"]
+                "": ["IP 66 Setup", 
+                     "IP66 Finish"
+                ]
             },
             "IP 67 Basic Function Test": {
                 "": [
@@ -174,10 +238,17 @@ class FileExplorerApp:
                 ]
             },
             "IP X7 Test": {
-                "": ["IP X7 Test"]
+                "": ["IP X7 Function check Before Test",
+                     "IP X7 SETUP",
+                     "IP X7 Test",
+                     "IP X7 Unpack",
+                     "IP X7 Function check After Test"
+                ]
             },
             "IP67老化測試": {
-                "": ["IP 67 Setup", "IP67 Finish"]
+                "": ["IP 67 Setup", 
+                     "IP67 Finish"
+                ]
             },
             "IP 68 Basic Function Test": {
                 "": [
@@ -186,10 +257,17 @@ class FileExplorerApp:
                 ]
             },
             "IP X8 Test": {
-                "": ["IP X8 Test"]
+                "": ["IP X8 Function check Before Test",
+                     "IP X8 SETUP",
+                     "IP X8 Test",
+                     "IP X8 Unpack",
+                     "IP X8 Function check After Test"
+                ]
             },
             "IP68老化測試": {
-                "": ["IP 68 Setup", "IP68 Finish"]
+                "": ["IP 68 Setup", 
+                     "IP68 Finish"
+                ]
             },
 
             # Salt Mist
@@ -211,16 +289,18 @@ class FileExplorerApp:
             # Package (PKG)
             "Step3_Package Basic Test": {
                 "": [
-                    "PKG Function Check Before Test", 
-                    "PKG Function Check After Test"
+                    "Function check Before Test", 
+                    "Function check After Test"
                 ]
             },
             "Step4_Package Vib Test": {
-                "": ["Z-Start", "Z-Finish"]
+                "": ["Z-Start", 
+                     "Z-Finish"
+                ]
             },
             "Step6_Package Drop Test": {
                 "": [
-                    "weight_height", 
+                    "weight", 
                     "Corner", 
                     "Edge1", 
                     "Edge2", 
@@ -235,25 +315,55 @@ class FileExplorerApp:
                 ]
             },
             "Step9_Function Check After ISTA Test": {
-                "": ["Function check"]
+                "": ["Function check"
+                ]
             },
 
             # Storage
             "Storage Test Basic": {
-                "": ["Function check Before Test", "Function check After Test"]
+                "": ["Function check Before Test", 
+                     "Function check After Test"
+                ]
             },
             "HTHHS Test": {
-                "": ["Setup", "Finish", "Function check After Test"]
+                "": ["HTHHS Test Setup", 
+                     "HTHHS Test Finish", 
+                     "HTHHS Test Function check After Test"
+                ]
             },
             "LTS Test": {
-                "": ["Setup", "Finish", "Function check After Test"]
+                "": ["LTS Test Setup", 
+                     "LTS Test Finish", 
+                     "LTS Test Function check After Test"
+                ]
             }
         }
+
+        # Automatically locate and open the designated Markdown file
+        default_md_file = self.find_file("ME_Other_Folder_Structure.md")
         if os.path.exists(default_md_file):
             self.show_markdown_in_new_window(default_md_file)
         else:
             messagebox.showerror("Error", f"Default Markdown file not found:\n{default_md_file}")
+    def find_file(self, filename, start_dir=None):
+        """
+        Search for a file with the given name starting from the specified directory.
+        :param filename: Name of the file to search for
+        :param start_dir: Directory to start the search (default is C:\\)
+        :return: Full path to the file if found, otherwise None
+        """
+        # Ensure start_dir is an absolute path
+        if start_dir is None:
+            start_dir = os.path.expanduser("~/Desktop/AutomaticTool/重新命名/ME rename tool/")  # Convert ~ to full path
 
+        if not os.path.exists(start_dir):  # Check if the directory exists
+            return None  
+
+        for root, dirs, files in os.walk(start_dir):
+            if filename in files:
+                return os.path.join(root, filename)
+
+        return None  # File not found
     #定義markdown window auto open
     def show_markdown_in_new_window(self, file_path):
         # Read and convert the Markdown file to HTML
@@ -427,14 +537,14 @@ class FileExplorerApp:
         
         elif test_execution == "[ISTA] Package Vib&Drop":
             return [
-                "Step1_外箱六面_Vib前",
-                "Step2_彩盒&DUT六面_Vib前",
-                "Step3_Package Basic Test",
+                "Step1_Basic外箱六面_Vib前",
+                "Step2_Basic彩盒DUT六面_Vib前",
+                "Step3_PKG Basic Function Test",
                 "Step4_Package Vib Test",
                 "Step5_外箱六面_Vib後Drop前",
                 "Step6_Package Drop Test",
                 "Step7_外箱六面_Drop後",
-                "Step8_彩盒&DUT六面_Drop",
+                "Step8_彩盒DUT六面_Drop後",
                 "Step9_Function Check After ISTA Test"
             ]
         #需新增Storage Basic function test folder
@@ -1139,7 +1249,7 @@ class FileExplorerApp:
 
         return total_renamed
 
-
+##修正 六面子資料夾只有數字會重新命名(英文與中文皆不會自動命名)
     def rename_files_in_sixpiece_folders(self, folder_path, folder_name):
         """
         Rename files in the given folder with names containing "外箱六面" or "DUT六面" to match
@@ -1343,7 +1453,6 @@ class FileExplorerApp:
 
 # Main execution
 if __name__ == "__main__":
-    default_md_file = r"C:\Users\AlvinYT_Liang\Desktop\AutomaticTool\重新命名\ME rename tool\ME_Other_Folder_Structure.md"
     root = TkinterDnD.Tk()  # Create the root window with drag-and-drop enabled
     app = FileExplorerApp(root)  # Pass the root to FileExplorerApp
     root.mainloop()  # Start the main event loop
