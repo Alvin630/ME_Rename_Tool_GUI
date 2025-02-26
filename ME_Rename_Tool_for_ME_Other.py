@@ -349,12 +349,12 @@ class FileExplorerApp:
         """
         Search for a file with the given name starting from the specified directory.
         :param filename: Name of the file to search for
-        :param start_dir: Directory to start the search (default is C:\\)
+        :param start_dir: Directory to start the search (default is /Desktop/AutomaticTool/)
         :return: Full path to the file if found, otherwise None
         """
         # Ensure start_dir is an absolute path
         if start_dir is None:
-            start_dir = os.path.expanduser("~/Desktop/AutomaticTool/重新命名/ME rename tool/")  # Convert ~ to full path
+            start_dir = os.path.expanduser("~/Desktop/AutomaticTool/")  # Convert ~ to full path
 
         if not os.path.exists(start_dir):  # Check if the directory exists
             return None  
@@ -599,13 +599,13 @@ class FileExplorerApp:
             selected_executions = []
             options = [ 
                         "[IP dirt] IP 2X", "[IP dirt] IP 3X","[IP dirt] IP 4X",
-                        "[IP dirt] IP 5X", "[IP dirt] IP 6X","[IP water] IP X3", "[IP water] IP X4",
-                        "[IP water] IP X5","[IP water] IP X6", "[IP water] IP X7","[IP water] IP X8",
-                        "[IP Test] IP 66", "[IP Test] IP 67", "[IP Test] IP 68", "[Salt Mist]", 
-                        "[ISTA] Package Vib&Drop", 
-                        "[Storage] HTHHS&LTS"
+                        "[IP dirt] IP 5X", "[IP dirt] IP 6X","[IP water] IP X3", 
+                        "[IP water] IP X4","[IP water] IP X5","[IP water] IP X6", 
+                        "[IP water] IP X7","[IP water] IP X8","[IP Test] IP 66", 
+                        "[IP Test] IP 67", "[IP Test] IP 68", "[Salt Mist]", 
+                        "[ISTA] Package Vib&Drop", "[Storage] HTHHS&LTS"
                         ]
-            #Function to handle the window closure behavior (close button X)
+            # Function to handle the window closure behavior (close button X)
             # Create a new window for the multi-select dropdown menu
             execution_window = tk.Toplevel(self.root)
             execution_window.title("Test Executions")
@@ -1054,7 +1054,7 @@ class FileExplorerApp:
         if response:
             return self.perform_rename(folder_path, naming_patterns, images)
         return 0
-#重新檢查命盟規則是否符合naming pattern狀況
+#重新檢查命名規則是否符合naming pattern狀況
     def prompt_for_partial_rename(self, folder_path, existing_names, mismatched_files, missing_patterns, naming_patterns, images):
         """
         Prompt the user to handle partial matches.
@@ -1262,22 +1262,31 @@ class FileExplorerApp:
         if os.path.isdir(folder_path):
             # Extract folder name after the first "_"
             new_folder_name = "_".join(folder_name.split("_")[1:]) if "_" in folder_name else folder_name
-            #新增六面如果真測到有子資料夾則椅子資料夾之數量辨認
+
             # Check if the folder name contains "外箱六面" or "DUT六面"
             if "外箱六面" in folder_name or "DUT六面" in folder_name:
-                # Check the number of images in the main folder
-                image_files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f)) and f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp'))]
-                if len(image_files) != 6:
-                    messagebox.showwarning("影像數量錯誤", f"請檢查 {folder_path} 影像數量是否正確(6張)，將跳過命名該資料夾影像！")
-                    return total_renamed  # Skip renaming if the count is not six
-
-                # Check the number of images in each subfolder
+                # Find subfolders (only numeric subfolders)
                 subfolders = [d for d in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, d)) and d.isdigit()]
-                for subfolder in subfolders:
-                    subfolder_path = os.path.join(folder_path, subfolder)
-                    subfolder_images = [f for f in os.listdir(subfolder_path) if os.path.isfile(os.path.join(subfolder_path, f)) and f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp'))]
-                    if len(subfolder_images) != 6:
-                        messagebox.showwarning("影像數量錯誤", f"請檢查 {subfolder_path} 影像數量是否正確(6張)，將跳過命名該資料夾影像！")
+
+                if subfolders:
+                    # If there are subfolders, check image count in each subfolder
+                    for subfolder in subfolders:
+                        subfolder_path = os.path.join(folder_path, subfolder)
+                        subfolder_images = [
+                            f for f in os.listdir(subfolder_path)
+                            if os.path.isfile(os.path.join(subfolder_path, f)) and f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp'))
+                        ]
+                        if len(subfolder_images) != 6:
+                            messagebox.showwarning("影像數量錯誤", f"請檢查 {subfolder_path} 影像數量是否正確(6張)，將跳過命名該資料夾影像！")
+                            return total_renamed  # Skip renaming if the count is not six
+                else:
+                    # If there are no subfolders, check the main folder
+                    image_files = [
+                        f for f in os.listdir(folder_path)
+                        if os.path.isfile(os.path.join(folder_path, f)) and f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp'))
+                    ]
+                    if len(image_files) != 6:
+                        messagebox.showwarning("影像數量錯誤", f"請檢查 {folder_path} 影像數量是否正確(6張)，將跳過命名該資料夾影像！")
                         return total_renamed  # Skip renaming if the count is not six
 
             files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
